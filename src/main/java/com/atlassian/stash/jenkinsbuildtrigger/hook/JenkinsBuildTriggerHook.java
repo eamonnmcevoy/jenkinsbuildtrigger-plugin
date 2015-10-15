@@ -3,10 +3,10 @@ package com.atlassian.stash.jenkinsbuildtrigger.hook;
 import com.atlassian.stash.hook.repository.*;
 import com.atlassian.stash.repository.*;
 import com.atlassian.stash.setting.*;
+import com.atlassian.stash.jenkinsbuildtrigger.hook.URLBuilder;
 
 import java.net.URL;
 import java.util.Collection;
-import java.util.regex.Pattern;
 
 public class JenkinsBuildTriggerHook implements AsyncPostReceiveRepositoryHook, RepositorySettingsValidator
 {
@@ -19,9 +19,9 @@ public class JenkinsBuildTriggerHook implements AsyncPostReceiveRepositoryHook, 
         if(refChanges.isEmpty())
             return;
 
-        startBuild(
-                buildUrl(context,
-                        (RefChange)refChanges.toArray()[0]));
+        URLBuilder urlBuilder = new URLBuilder();
+        String url = urlBuilder.buildUrl(context, (RefChange)refChanges.toArray()[0]);
+        startBuild(url);
     }
 
     @Override
@@ -39,36 +39,6 @@ public class JenkinsBuildTriggerHook implements AsyncPostReceiveRepositoryHook, 
         {
             errors.addFieldError("token", "Authentication token field is blank, please supply one");
         }
-    }
-
-    private boolean isBranchNameValid(RepositoryHookContext context, String branch)
-    {
-        String branchRegex = context.getSettings().getString("branchRegex");
-        return Pattern.matches(branchRegex, branch);
-    }
-
-    private boolean isNewCommitHashValid(String newCommit, String previousCommit)
-    {
-        return (previousCommit != newCommit);
-    }
-
-    private String buildUrl(RepositoryHookContext context, RefChange change)
-    {
-        String url = context.getSettings().getString("url");
-        String token = context.getSettings().getString("token");
-        String branch = change.getRefId();
-        String previousCommit = change.getFromHash();
-        String newCommit = change.getToHash();
-
-        String buildUrl = url + "/buildWithParameters" +
-                "?token=" + token +
-                "&BRANCH_TO_BUILD=" + branch +
-                "&PREVIOUS_COMMIT=" + previousCommit +
-                "&NEW_COMMIT=" + newCommit;
-
-        return (isBranchNameValid(context, branch) || isNewCommitHashValid(newCommit,previousCommit)) ?
-                 buildUrl :
-                 "";
     }
 
     private void startBuild(String url)
