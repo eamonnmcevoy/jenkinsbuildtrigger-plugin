@@ -1,0 +1,29 @@
+{namespace com.atlassian.stash.jenkinsbuildtrigger.hook.jenkinsbuildtriggerhook}
+
+/**
+ * @param? config
+ * @param? errors
+ */
+{template .view}
+    {call aui.form.textField}
+        {param id: 'url' /}
+        {param value: $config ? $config['url'] : null /}
+        {param labelContent: 'Jenkins job url'  /}
+        {param descriptionText: '' /}
+        {param errorTexts: $errors ? $errors['url'] : null /}
+    {/call}
+    {call aui.form.textField}
+        {param id: 'branchRegex' /}
+        {param value: $config ? $config['branchRegex'] : null /}
+        {param labelContent: 'Branch regex'  /}
+        {param descriptionText: 'Only build branches matching this regex' /}
+        {param errorTexts: $errors ? $errors['branchRegex'] : null /}
+    {/call}
+    {call aui.form.textField}
+        {param id: 'token' /}
+        {param value: $config ? $config['token'] : null /}
+        {param labelContent: 'Authentication token'  /}
+        {param descriptionText: 'Trigger builds remotely (e.g., from scripts)' /}
+        {param errorTexts: $errors ? $errors['token'] : null /}
+    {/call}
+{/template}
