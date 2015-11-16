@@ -20,8 +20,10 @@ public class JenkinsBuildTriggerHook implements AsyncPostReceiveRepositoryHook, 
             return;
 
         URLBuilder urlBuilder = new URLBuilder();
-        String url = urlBuilder.buildUrl(context, (RefChange)refChanges.toArray()[0]);
-        startBuild(url);
+        for(RefChange change: refChanges) {
+		String url = urlBuilder.buildUrl(context, change);
+        	startBuild(url);
+	}
     }
 
     @Override
