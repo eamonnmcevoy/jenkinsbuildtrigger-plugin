@@ -1,3 +1,5 @@
 The is a post commit hook for stash.
 
 It allows the triggering of builds using the Jenkins `Trigger builds remotely` option.
+
+https://marketplace.atlassian.com/plugins/com.atlassian.stash.jenkinsbuildtrigger.jenkinsbuildtrigger-plugin/server/overview
